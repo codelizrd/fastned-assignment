@@ -1,0 +1,10 @@
+  _____      _      ____    _____   _   _   _____   ____  
+ |  ___|    / \    / ___|  |_   _| | \ | | | ____| |  _ \ 
+ | |_      / _ \   \___ \    | |   |  \| | |  _|   | | | |
+ |  _|    / ___ \   ___) |   | |   | |\  | | |___  | |_| |
+ |_|     /_/   \_\ |____/    |_|   |_| \_| |_____| |____/
+
+ The Fastned Solar Charging Network
+ Software Engineering Assessment by Willem van Duijn
+
+ http://localhost:8090/

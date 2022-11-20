@@ -1,0 +1,194 @@
+openapi: 3.0.3
+info:
+  title: The Fastned Solar Charging Network
+  contact:
+    email: willemvd@me.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8090/solar-simulator/
+tags:
+  - name: network
+    description: Network of Grids
+paths:
+  /load:
+    post:
+      summary: Load network of grids
+      operationId: loadNetwork
+      tags:
+        - network
+      requestBody:
+        description: The network to load
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Network'
+      responses:
+        '205':
+          description: Successful operation
+        default:
+          description: Unsuccessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /output/{elapsedDays}:
+    get:
+      summary: Return the total output of the network at elapsedDays
+      operationId: getNetworkTotalOutputAtElapsedDays
+      tags:
+        - network
+      parameters:
+        - name: elapsedDays
+          in: path
+          description: Number of elapsed days
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkOutput'
+        default:
+          description: Unsuccessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /network/{elapsedDays}:
+    get:
+      summary: Get the network at elapsedDays
+      operationId: getNetworkAtElapsedDays
+      tags:
+        - network
+      parameters:
+        - name: elapsedDays
+          in: path
+          description: Number of elapsed days
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/GridWithOutput'
+        default:
+          description: Unsuccessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /output/daily/{elapsedDays}:
+    get:
+      summary: Return the daily output for the network
+      operationId: getNetworkDailyOutputAtElapsedDays
+      tags:
+        - network
+      parameters:
+        - name: elapsedDays
+          in: path
+          description: Number of elapsed days
+          required: true
+          schema:
+            type: integer
+        - name: stepDays
+          in: query
+          description: Skip number of days to reduce data set
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+                  format: double
+        default:
+          description: Unsuccessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+
+    Network:
+      type: array
+      items:
+        $ref: '#/components/schemas/Grid'
+
+    Grid:
+      type: object
+      required:
+        - name
+        - age
+      properties:
+        name:
+          type: string
+          example: "Amsterdam"
+        age:
+          type: integer
+          example: 100
+
+    GridWithOutput:
+      allOf:
+        - $ref: '#/components/schemas/Grid'
+        - $ref: '#/components/schemas/NetworkOutput'
+        - type: object
+          required:
+            - status
+          properties:
+            status:
+              type: string
+              enum: [PLANNED, INSTALLING, PRODUCTION, DECOMMISSIONED]
+
+    NetworkOutput:
+      type: object
+      required:
+        - "total-output-in-kwh"
+        - "daily-output-in-kwh"
+        - "peak-output-in-kw"
+      properties:
+        "total-output-in-kwh":
+          type: integer
+          example: 45000
+        "daily-output-in-kwh":
+          type: number
+          format: double
+          example: 450.00
+        "peak-output-in-kw":
+          type: number
+          format: double
+          example: 200.00
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: 500
+        message:
+          type: string
+          example: Internal Server Error
+
+
