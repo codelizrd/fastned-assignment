@@ -4,12 +4,13 @@ import {Button, Dimmer, Icon, Loader, Message, Table} from "semantic-ui-react";
 import {GridDeleteButton} from "./GridDeleteButton";
 import {GridAddButton} from "./GridAddButton";
 import {GridLoadButton} from "./GridLoadButton";
-import {useToggle} from "../util";
+import {Toggle, useToggle} from "../util";
 import {useQuery} from "@tanstack/react-query";
 import {apiClient} from "../App";
 
 type GridTableProps = {
     elapsedDays: number
+    editToggle: Toggle
 }
 
 const getStatusIcon = (status: GridWithOutputStatusEnum) => {
@@ -21,9 +22,7 @@ const getStatusIcon = (status: GridWithOutputStatusEnum) => {
     }
 }
 
-export const GridTable: React.FunctionComponent<GridTableProps> = ({elapsedDays}) => {
-    const editToggle = useToggle(false);
-
+export const GridTable: React.FunctionComponent<GridTableProps> = ({editToggle, elapsedDays}) => {
     const queryFn = React.useCallback(() => apiClient.getNetworkAtElapsedDays({elapsedDays}), [elapsedDays]);
     const {isLoading, isPreviousData, isError, data} = useQuery({queryKey: ['network', elapsedDays], queryFn, keepPreviousData: true});
 
@@ -51,7 +50,7 @@ export const GridTable: React.FunctionComponent<GridTableProps> = ({elapsedDays}
                         <Table.HeaderCell colSpan={editToggle.value ? 6 : 5} verticalAlign='middle'>
                             Network
                             <span style={{float: 'right'}}>
-                                <Button onClick={editToggle.toggle} active={editToggle.value}>Edit</Button>
+                                <Button onClick={editToggle.toggle} active={editToggle.value}>{editToggle.value ? 'Done editing' : 'Edit'}</Button>
                                 <GridLoadButton>Load JSON</GridLoadButton>
                             </span>
                         </Table.HeaderCell>

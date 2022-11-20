@@ -27,6 +27,7 @@ const chartOptions: ChartOptions<'line'> = {
         y: {
             type: 'linear',
             display: true,
+            min: 0,
             title: {
                 display: true,
                 text: 'Output in kWh',
@@ -38,6 +39,7 @@ const chartOptions: ChartOptions<'line'> = {
         x: {
             type: 'linear',
             display: true,
+            min: 0,
             title: {
                 display: true,
                 text: 'Elapsed day',

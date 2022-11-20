@@ -1,13 +1,14 @@
 import React from 'react';
 
-export function useToggle(initialState: boolean | (() => boolean) = false, preventDefault: boolean = true):
-    {
-        value: boolean,
-        toggle: (event?: React.MouseEvent | React.KeyboardEvent | any) => void,
-        set: (value: boolean | ((current: boolean) => boolean)) => void,
-        off: () => void,
-        on: () => void
-    } {
+export type Toggle = {
+    value: boolean,
+    toggle: (event?: React.MouseEvent | React.KeyboardEvent | any) => void,
+    set: (value: boolean | ((current: boolean) => boolean)) => void,
+    off: () => void,
+    on: () => void
+}
+
+export function useToggle(initialState: boolean | (() => boolean) = false, preventDefault: boolean = true): Toggle {
     const [value, setValue] = React.useState<boolean>(initialState);
 
     return React.useMemo(() => ({

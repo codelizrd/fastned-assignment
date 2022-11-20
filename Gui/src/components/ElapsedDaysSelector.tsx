@@ -7,11 +7,16 @@ type ElapsedDaysSelectorProps = {
     onChange: (days: number) => void
     defaultValue: number
     max: number | undefined
+    disabled: boolean
 }
 
-export const ElapsedDaysSelector: React.FunctionComponent<ElapsedDaysSelectorProps> = ({defaultValue, max, onChange}) => {
-
+export const ElapsedDaysSelector: React.FunctionComponent<ElapsedDaysSelectorProps> = ({defaultValue, max, onChange, disabled}) => {
     const [days, setDays] = React.useState<number>(defaultValue);
+
+    // Reset to 0 upon change of 'disabled' attribute
+    React.useEffect(() => {
+        setDays(0)
+    }, [disabled, setDays]);
 
     const debouncePropagator = React.useMemo(
         () => debounce((value: any) => onChange(value), 200
@@ -34,10 +39,10 @@ export const ElapsedDaysSelector: React.FunctionComponent<ElapsedDaysSelectorPro
                         <label>Elapsed days</label>
                         <Grid verticalAlign='middle'>
                             <Grid.Column width='13'>
-                                <Slider value={days} min={0} max={max || 30*365} onChange={onSliderChange}/>
+                                <Slider disabled={disabled} value={days} min={0} max={max || 30*365} onChange={onSliderChange}/>
                             </Grid.Column>
                             <Grid.Column width='3'>
-                               <input type='number' value={days} onChange={onInputChange} style={{textAlign: 'center'}} />
+                               <input type='number' disabled={disabled} value={days} onChange={onInputChange} style={{textAlign: 'center'}} />
                             </Grid.Column>
                         </Grid>
                     </Form.Field>
