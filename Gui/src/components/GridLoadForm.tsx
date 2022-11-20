@@ -59,10 +59,10 @@ export const GridLoadForm: React.FunctionComponent<GridLoadFormProps> = ({onFini
 
             <Grid>
                 <Grid.Column floated='left' width={8}>
-                    <Form.Button>Load the network</Form.Button>
+                    <Form.Button>Load this network</Form.Button>
                 </Grid.Column>
                 <Grid.Column floated='right' width={8} textAlign='right'>
-                    <ReadInputFile onRead={onJsonRead}>Load file</ReadInputFile>
+                    <ReadInputFile onRead={onJsonRead}>Import from file</ReadInputFile>
                 </Grid.Column>
             </Grid>
         </Form>
