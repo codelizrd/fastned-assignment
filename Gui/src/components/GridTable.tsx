@@ -1,26 +1,33 @@
 import React from 'react';
 import {GridWithOutputStatusEnum} from "../generated/api";
-import {Button, Dimmer, Icon, Loader, Message, Table} from "semantic-ui-react";
+import {Button, Dimmer, Icon, Loader, Message, Popup, Table} from "semantic-ui-react";
 import {GridDeleteButton} from "./GridDeleteButton";
 import {GridAddButton} from "./GridAddButton";
 import {GridLoadButton} from "./GridLoadButton";
 import {Toggle} from "../util";
 import {useQuery} from "@tanstack/react-query";
 import {apiClient} from "../App";
+import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
+import {IconProps} from "semantic-ui-react/dist/commonjs/elements/Icon/Icon";
 
 type GridTableProps = {
     elapsedDays: number
     editToggle: Toggle
 }
 
-const getStatusIcon = (status: GridWithOutputStatusEnum) => {
-    switch(status) {
-        case GridWithOutputStatusEnum.Planned: return <Icon name='handshake' color='grey' />
-        case GridWithOutputStatusEnum.Installing: return <Icon name='wrench' color='orange' />
-        case GridWithOutputStatusEnum.Production: return <Icon name='sun' loading color='yellow' />
-        case GridWithOutputStatusEnum.Decommissioned: return <Icon name='broken chain' color='red' />
-    }
+const statusMeta: { [key in GridWithOutputStatusEnum]: {icon: SemanticICONS, color: SemanticCOLORS, description: string, special?: Partial<IconProps> } } = {
+    [GridWithOutputStatusEnum.Planned]: {icon: 'handshake', color: 'grey', description: 'Planned grid'},
+    [GridWithOutputStatusEnum.Installing]: {icon: 'wrench', color: 'orange', description: 'Grid is being installed'},
+    [GridWithOutputStatusEnum.Production]: {icon: 'sun', color: 'yellow', description: 'Grid is producing', special: {loading: true}},
+    [GridWithOutputStatusEnum.Decommissioned]: {icon: 'broken chain', color: 'red', description: 'Grid is decommissioned'},
 }
+
+const getStatusIcon = (status: GridWithOutputStatusEnum) => (
+    <Popup content={statusMeta[status].description}
+           position='bottom center'
+           trigger={<Icon name={statusMeta[status].icon} color={statusMeta[status].color} {...statusMeta[status].special} />}
+    />
+)
 
 export const GridTable: React.FunctionComponent<GridTableProps> = ({editToggle, elapsedDays}) => {
     const queryFn = React.useCallback(() => apiClient.getNetworkAtElapsedDays({elapsedDays}), [elapsedDays]);
