@@ -4,7 +4,7 @@ import {Button, Dimmer, Icon, Loader, Message, Table} from "semantic-ui-react";
 import {GridDeleteButton} from "./GridDeleteButton";
 import {GridAddButton} from "./GridAddButton";
 import {GridLoadButton} from "./GridLoadButton";
-import {Toggle, useToggle} from "../util";
+import {Toggle} from "../util";
 import {useQuery} from "@tanstack/react-query";
 import {apiClient} from "../App";
 
@@ -49,10 +49,16 @@ export const GridTable: React.FunctionComponent<GridTableProps> = ({editToggle, 
                     <Table.Row>
                         <Table.HeaderCell colSpan={editToggle.value ? 6 : 5} verticalAlign='middle'>
                             Network
-                            <span style={{float: 'right'}}>
-                                <Button onClick={editToggle.toggle} active={editToggle.value}>{editToggle.value ? 'Done editing' : 'Edit'}</Button>
-                                <GridLoadButton>Load JSON</GridLoadButton>
-                            </span>
+                            {editToggle.value ? (
+                                <span style={{float: 'right'}}>
+                                    <Button onClick={editToggle.off} positive={editToggle.value}>Done editing</Button>
+                                </span>
+                            ) : (
+                                <span style={{float: 'right'}}>
+                                    <Button onClick={editToggle.on}>Edit</Button>
+                                    <GridLoadButton>Load JSON</GridLoadButton>
+                                </span>
+                            )}
                         </Table.HeaderCell>
                     </Table.Row>
                     <Table.Row>
